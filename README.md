@@ -5,7 +5,7 @@ Metadata-only Python collector for GitHub commits, pull requests, reviews, and i
 ## Setup
 
 1. Copy `config/repositories.example.yml` to `config/repositories.yml`. List only repositories and organisations approved for collection. Organisations are disabled until added to `organizations.include`.
-2. Set either `GITHUB_TOKEN` to a fine-grained PAT with **read-only Metadata, Contents, Pull requests, Issues** access to only those repositories, or set all GitHub App variables in `.env.example`. A GitHub App needs the same read-only repository permissions and an installation limited to the approved repositories.
+2. Set either `GITHUB_TOKEN` to a fine-grained PAT with **read-only Metadata, Contents, Pull requests, Issues** access to only those repositories, or set all GitHub App variables in `.env.example`. In GitHub Actions, create the repository secret `ACTIVITY_GITHUB_TOKEN`; the workflow maps it to `GITHUB_TOKEN`. A GitHub App needs the same read-only repository permissions and an installation limited to the approved repositories.
 3. `python -m venv .venv`, activate it, then `pip install -r requirements.txt`.
 
 Run `python -m github_activity_collector doctor`, then `python -m github_activity_collector collect --today`. Use `collect --incremental` for the saved-state timestamp plus its configurable overlap window. Reports go to `data/daily`; `report --weekly`, `report --monthly`, and `export --format copilot` create the other outputs.

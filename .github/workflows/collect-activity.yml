@@ -23,7 +23,7 @@ jobs:
       - run: pytest
       - name: Collect
         env:
-          GITHUB_TOKEN: ${{ secrets.GH_ACTIVITY_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.ACTIVITY_GITHUB_TOKEN }}
           GITHUB_APP_ID: ${{ secrets.GH_ACTIVITY_APP_ID }}
           GITHUB_APP_INSTALLATION_ID: ${{ secrets.GH_ACTIVITY_APP_INSTALLATION_ID }}
           GITHUB_APP_PRIVATE_KEY: ${{ secrets.GH_ACTIVITY_APP_PRIVATE_KEY }}
