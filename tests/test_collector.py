@@ -14,3 +14,14 @@ def test_commit_seen_on_two_branches_is_deduplicated():
     events, warnings = collect(Client(), [{"full_name": "me/repo", "default_branch": "main"}], "me", [], datetime(2026, 11, 9, tzinfo=UTC), datetime(2026, 11, 10, tzinfo=UTC))
     assert not warnings
     assert [event["id"] for event in events] == ["commit:me/repo:same"]
+
+
+def test_configured_author_email_matches_unlinked_git_identity():
+    class EmailClient(Client):
+        def pages(self, path, params=None):
+            if path.endswith("/branches"): return iter([])
+            if path.endswith("/commits"):
+                return iter([{"sha": "email", "author": None, "commit": {"author": {"date": "2026-11-09T01:00:00Z", "email": "ALGI@EXAMPLE.TEST", "name": "Algi"}, "message": "email commit"}, "html_url": "https://x"}])
+            return iter([])
+    events, _ = collect(EmailClient(), [{"full_name": "me/repo", "default_branch": "main"}], "me", ["algi@example.test"], datetime(2026, 11, 9, tzinfo=UTC), datetime(2026, 11, 10, tzinfo=UTC))
+    assert events[0]["sha"] == "email"

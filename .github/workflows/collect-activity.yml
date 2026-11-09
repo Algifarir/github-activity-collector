@@ -15,18 +15,20 @@ permissions:
 jobs:
   collect:
     runs-on: ubuntu-latest
+    env:
+      GITHUB_TOKEN: ${{ secrets.ACTIVITY_GITHUB_TOKEN }}
+      GITHUB_APP_ID: ${{ secrets.GH_ACTIVITY_APP_ID }}
+      GITHUB_APP_INSTALLATION_ID: ${{ secrets.GH_ACTIVITY_APP_INSTALLATION_ID }}
+      GITHUB_APP_PRIVATE_KEY: ${{ secrets.GH_ACTIVITY_APP_PRIVATE_KEY }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with: { python-version: "3.12" }
       - run: pip install -r requirements.txt -e .
       - run: pytest
+      - name: Diagnose GitHub access
+        run: python -m github_activity_collector diagnose
       - name: Collect
-        env:
-          GITHUB_TOKEN: ${{ secrets.ACTIVITY_GITHUB_TOKEN }}
-          GITHUB_APP_ID: ${{ secrets.GH_ACTIVITY_APP_ID }}
-          GITHUB_APP_INSTALLATION_ID: ${{ secrets.GH_ACTIVITY_APP_INSTALLATION_ID }}
-          GITHUB_APP_PRIVATE_KEY: ${{ secrets.GH_ACTIVITY_APP_PRIVATE_KEY }}
         run: |
           if [ -n "${{ inputs.from }}" ]; then python -m github_activity_collector collect --from "${{ inputs.from }}" --to "${{ inputs.to || inputs.from }}"; else python -m github_activity_collector collect --incremental; fi
       - uses: actions/upload-artifact@v4

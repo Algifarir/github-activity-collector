@@ -1,3 +1,4 @@
 PyYAML==6.0.2
 PyJWT[crypto]==2.10.1
+tzdata==2025.2
 pytest==8.3.4

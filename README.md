@@ -10,6 +10,12 @@ Metadata-only Python collector for GitHub commits, pull requests, reviews, and i
 
 Run `python -m github_activity_collector doctor`, then `python -m github_activity_collector collect --today`. Use `collect --incremental` for the saved-state timestamp plus its configurable overlap window. Reports go to `data/daily`; `report --weekly`, `report --monthly`, and `export --format copilot` create the other outputs.
 
+## Historical backfill and troubleshooting
+
+For a historical run, use `python -m github_activity_collector collect --from 2026-08-01 --to 2026-11-09`. In Actions, provide the same optional **from** and **to** inputs; otherwise the workflow uses incremental collection. On an ephemeral Actions runner with no saved state, the first incremental run defaults to the configurable `initial_backfill_days` (90 days).
+
+Run `python -m github_activity_collector diagnose` before a collection. It prints the authenticated GitHub account, configured author identities and filters, the number of accessible authorized repositories, permission scopes reported by GitHub, remaining API budget, and latest saved collection statistics—without printing credentials or repository names. Add `--show-repositories` only for a local troubleshooting run. A zero activity result is valid only when `collection_status` is `complete`; `partial` carries warnings for repositories that could not be read. Authentication, discovery, and rate-limit errors stop the workflow rather than producing a false successful report.
+
 ## Security and operations
 
 Credentials are environment-only and are not logged. Configure anonymization/title redaction for exports leaving the company boundary. The Actions workflow uses secrets, runs at 05:00 WIB (22:00 UTC), tests first, and uploads private artifacts for 14 days; it never commits report data.

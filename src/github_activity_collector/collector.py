@@ -23,10 +23,13 @@ def collect(client, repos: list[dict], username: str, author_emails: list[str], 
             branches = {repo_data.get("default_branch", "main")}
             branches.update(branch["name"] for branch in client.pages(f"/repos/{repo}/branches"))
             for branch in branches:
-                for commit in client.pages(f"/repos/{repo}/commits", {"sha": branch, "since": start.isoformat(), "until": end.isoformat(), "author": username}):
+                # Do not use GitHub's author query: it excludes valid configured-email commits
+                # when that Git identity is not linked to the account.
+                for commit in client.pages(f"/repos/{repo}/commits", {"sha": branch, "since": start.isoformat(), "until": end.isoformat()}):
                     author = commit.get("author") or {}; details = commit["commit"]
-                    if author.get("login") == username or details.get("author", {}).get("email") in author_emails:
-                        events.append(_activity("commit", repo, commit["sha"], details["author"]["date"], details["message"].split("\n", 1)[0], commit["html_url"], sha=commit["sha"], author=username))
+                    commit_author = details.get("author", {})
+                    if author.get("login") == username or (commit.get("committer") or {}).get("login") == username or commit_author.get("email", "").casefold() in {email.casefold() for email in author_emails}:
+                        events.append(_activity("commit", repo, commit["sha"], commit_author["date"], details["message"].split("\n", 1)[0], commit["html_url"], sha=commit["sha"], author=commit_author.get("name", username), author_email=commit_author.get("email")))
             pulls = list(client.pages(f"/repos/{repo}/pulls", {"state": "all", "sort": "updated", "direction": "desc"}))
             for pr in pulls:
                 number, url = pr["number"], pr["html_url"]

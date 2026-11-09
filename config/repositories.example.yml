@@ -11,5 +11,6 @@ collection:
   include_private: true
   include_public: true
   overlap_hours: 24
+  initial_backfill_days: 90
   anonymize_repositories: false
   redact_titles: false
