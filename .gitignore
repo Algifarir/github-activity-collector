@@ -1,5 +1,4 @@
 .env
-config/repositories.yml
 data/**
 !data/.gitkeep
 __pycache__/

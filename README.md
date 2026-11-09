@@ -4,7 +4,7 @@ Metadata-only Python collector for GitHub commits, pull requests, reviews, and i
 
 ## Setup
 
-1. Copy `config/repositories.example.yml` to `config/repositories.yml`. List only repositories and organisations approved for collection. Organisations are disabled until added to `organizations.include`.
+1. Edit the checked-in `config/repositories.yml` to list only repositories and organisations approved for collection. Organisations are disabled until added to `organizations.include`. This file contains no credentials and must be committed so GitHub Actions can use it.
 2. Set either `GITHUB_TOKEN` to a fine-grained PAT with **read-only Metadata, Contents, Pull requests, Issues** access to only those repositories, or set all GitHub App variables in `.env.example`. In GitHub Actions, create the repository secret `ACTIVITY_GITHUB_TOKEN`; the workflow maps it to `GITHUB_TOKEN`. A GitHub App needs the same read-only repository permissions and an installation limited to the approved repositories.
 3. `python -m venv .venv`, activate it, then `pip install -r requirements.txt`.
 
