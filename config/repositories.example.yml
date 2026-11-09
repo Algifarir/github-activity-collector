@@ -1,0 +1,15 @@
+github:
+  username: Algifarir
+  author_emails: []
+developer_name: Algi Fari Ramdhani
+repositories:
+  include: ["Algifarir/*"]
+  exclude: ["Algifarir/github-activity-collector"]
+organizations:
+  include: [] # Company organisations stay disabled until explicitly authorized.
+collection:
+  include_private: true
+  include_public: true
+  overlap_hours: 24
+  anonymize_repositories: false
+  redact_titles: false
